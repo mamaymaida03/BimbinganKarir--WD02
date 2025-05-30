@@ -1,0 +1,37 @@
+[90m= [39m[34;4mIlluminate\Database\Eloquent\Collection[39;24m {#5210
+    [34mall[39m: [
+      [34;4mApp\Models\User[39;24m {#5212
+        [34mid[39m: [35m3[39m,
+        [34mrole[39m: "[32mpasien[39m",
+        [34mnama[39m: "[32mAhmad Fauzi[39m",
+        [34malamat[39m: "[32mJl. Melati No. 3[39m",
+        [34mno_ktp[39m: "[32m3456789012345678[39m",
+        [34mno_hp[39m: "[32m082134567890[39m",
+        [34mno_rm[39m: "[32mRM001[39m",
+        [34mpoli[39m: [36mnull[39m,
+        [34memail[39m: "[32mahmad@klinik.test[39m",
+        [34memail_verified_at[39m: [36mnull[39m,
+        #[33mpassword[39m: "[32m$2y$12$D9DFYz5rD/eJothBbahhW.kVmRsyhp6hyH58KIE1/7xu5Ka943xrG[39m",
+        #[33mremember_token[39m: [36mnull[39m,
+        [34mcreated_at[39m: "[32m2025-05-21 05:45:16[39m",
+        [34mupdated_at[39m: "[32m2025-05-21 05:45:16[39m",
+      },
+      [34;4mApp\Models\User[39;24m {#5214
+        [34mid[39m: [35m4[39m,
+        [34mrole[39m: "[32mpasien[39m",
+        [34mnama[39m: "[32mRina Kartika[39m",
+        [34malamat[39m: "[32mJl. Mawar No. 7[39m",
+        [34mno_ktp[39m: "[32m4567890123456789[39m",
+        [34mno_hp[39m: "[32m083245678901[39m",
+        [34mno_rm[39m: "[32mRM002[39m",
+        [34mpoli[39m: [36mnull[39m,
+        [34memail[39m: "[32mrina@klinik.test[39m",
+        [34memail_verified_at[39m: [36mnull[39m,
+        #[33mpassword[39m: "[32m$2y$12$CBkqjD0CiOe/uyy2quRszuTYkfjYFIR9Mgy1epW8Ra/pqErDeSyW2[39m",
+        #[33mremember_token[39m: [36mnull[39m,
+        [34mcreated_at[39m: "[32m2025-05-21 05:45:16[39m",
+        [34mupdated_at[39m: "[32m2025-05-21 05:45:16[39m",
+      },
+    ],
+  }
+
