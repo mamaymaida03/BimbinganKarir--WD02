@@ -27,12 +27,13 @@
                         <tr>
                             <th scope="col">No</th>
                             <th scope="col">Hari</th>
-                            <th scope="col">Jam Mulai</th>
-                            <th scope="col">Jam Selesai</th>
+                            <th scope="col">Mulai</th>
+                            <th scope="col">Selesai</th>
                             <th scope="col">Status</th>
                             <th scope="col">Aksi</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @foreach ($jadwals as $jadwal)
                             <tr>
