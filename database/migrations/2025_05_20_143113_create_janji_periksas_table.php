@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('id_pasien')->constrained('users')->onDelete('cascade');
             $table->foreignId('id_jadwal')->constrained('jadwal_periksas')->onDelete('cascade');
             $table->text('keluhan');
-            $table->integer('no_antrian');
+            $table->string('no_antrian', 10);
             $table->timestamps();
         });
     }

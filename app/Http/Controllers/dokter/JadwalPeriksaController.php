@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Dokter;
+namespace App\Http\Controllers\dokter;
+
 use App\Http\Controllers\Controller;
 use App\Models\JadwalPeriksa;
 use Illuminate\Http\Request;
@@ -74,27 +75,28 @@ class JadwalPeriksaController extends Controller
     }
 
     // Mengubah status jadwal
-    public function toggleStatus($id)
+   public function toggleStatus($id)
     {
         $jadwal = JadwalPeriksa::findOrFail($id);
 
-        if ($jadwal->status !== 'aktif') {
+        if (!$jadwal->status) {
             // Nonaktifkan jadwal aktif lain untuk dokter yang sama
             JadwalPeriksa::where('id_dokter', $jadwal->id_dokter)
-                ->where('status', 'aktif')
-                ->update(['status' => 'nonaktif']);
+                ->where('status', true)
+                ->update(['status' => false]);
 
             // Aktifkan jadwal ini
-            $jadwal->status = 'aktif';
+            $jadwal->status = true;
         } else {
             // Kalau sedang aktif, jadikan nonaktif
-            $jadwal->status = 'nonaktif';
+            $jadwal->status = false;
         }
 
         $jadwal->save();
 
         return back()->with('success', 'Status jadwal berhasil diubah.');
     }
+
 
     // Menghapus jadwal
     public function destroy($id)

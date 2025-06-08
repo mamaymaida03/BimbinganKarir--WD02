@@ -9,22 +9,30 @@ class JanjiPeriksa extends Model
     protected $table = 'janji_periksas';
     protected $fillable = [
         'id_pasien',
-        'id_jadwal',
+        'id_jadwal_periksa',
         'status',
-        'tanggal_periksa',
         'keluhan',
+        'no_antrian',
     ];
 
-    public function pasien()
+    public function index()
+    {
+        $janjiPeriksas = auth()->user()->pasien->janjiPeriksas()->with('jadwalPeriksa.dokter')->get();
+        dd($janjiPeriksas); // Debugging
+        return view('pasien.riwayat-periksa.index', compact('janjiPeriksas'));
+    }
+
+    public function pasien():BelongsTo
     {
         return $this->belongsTo(User::class, 'id_pasien');
     }
 
-    public function jadwal()
+    public function jadwalPeriksa():BelongsTo
     {
-        return $this->belongsTo(JadwalPeriksa::class, 'id_jadwal');
+        return $this->belongsTo(JadwalPeriksa::class, 'id_jadwal_periksa');
     }
-    public function periksa()
+
+    public function periksa():HasOne
     {
         return $this->hasOne(Periksa::class, 'id_janji_periksa');
     }

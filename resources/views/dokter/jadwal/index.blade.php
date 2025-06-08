@@ -41,24 +41,20 @@
                                 <td class="align-middle text-start">{{ $jadwal->hari }}</td>
                                 <td class="align-middle text-start">{{ $jadwal->jam_mulai }}</td>
                                 <td class="align-middle text-start">{{ $jadwal->jam_selesai }}</td>
-                               <td class="align-middle text-start">
-                                <span class="badge {{ $jadwal->status == 'aktif' ? 'bg-success' : 'bg-danger' }} text-white fw-bold fs-5">
-                                    {{ ucfirst($jadwal->status) }}
-                                </span>
-                            </td>
-
+                                <td class="align-middle text-start">
+                                    <span class="badge {{ $jadwal->status ? 'bg-success' : 'bg-danger' }} text-white fw-bold fs-5">
+                                        {{ $jadwal->status ? 'Aktif' : 'Nonaktif' }}
+                                    </span>
+                                </td>
 
                                 <td class="flex items-center gap-3">
-                                   {{-- Button untuk mengubah status --}}
-                                <form action="{{ route('dokter.jadwal.status', $jadwal->id) }}" method="POST">
-                                    @csrf
-                                    @method('POST')
-
-                                    <button type="submit" class="btn {{ $jadwal->status == 'aktif' ? 'btn-warning' : 'btn-success' }} btn-sm">
-                                        {{ $jadwal->status == 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}
-                                    </button>
-                                </form>
-
+                                    {{-- Button untuk mengubah status --}}
+                                    <form action="{{ route('dokter.jadwal.status', $jadwal->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn {{ $jadwal->status ? 'btn-warning' : 'btn-success' }} btn-sm">
+                                            {{ $jadwal->status ? 'Nonaktifkan' : 'Aktifkan' }}
+                                        </button>
+                                    </form>
 
                                     {{-- Button Hapus --}}
                                     <form action="{{ route('dokter.jadwal.destroy', $jadwal->id) }}" method="POST">
