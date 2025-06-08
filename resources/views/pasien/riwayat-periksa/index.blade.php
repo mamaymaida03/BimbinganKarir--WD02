@@ -20,7 +20,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col">No</th>
-                                <th scope="col">Poliklinik</th>
+                                <th scope="col">Poli</th>
                                 <th scope="col">Dokter</th>
                                 <th scope="col">Hari</th>
                                 <th scope="col">Mulai</th>
