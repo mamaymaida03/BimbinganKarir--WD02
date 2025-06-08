@@ -39,8 +39,8 @@
                             <tr>
                                 <th scope="row" class="align-middle text-start">{{ $loop->iteration }}</th>
                                 <td class="align-middle text-start">{{ $jadwal->hari }}</td>
-                                <td class="align-middle text-start">{{ $jadwal->jam_mulai }}</td>
-                                <td class="align-middle text-start">{{ $jadwal->jam_selesai }}</td>
+                                <td class="align-middle text-start">{{ \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i') }}</td>
+                                <td class="align-middle text-start">{{ \Carbon\Carbon::parse($jadwal->jam_selesai)->format('H:i') }}</td>
                                 <td class="align-middle text-start">
                                     <span class="badge {{ $jadwal->status ? 'bg-success' : 'bg-danger' }} text-white fw-bold fs-5">
                                         {{ $jadwal->status ? 'Aktif' : 'Nonaktif' }}

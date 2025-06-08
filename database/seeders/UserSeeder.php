@@ -12,55 +12,71 @@ class UserSeeder extends Seeder
     /**
      * Run the database seeds.
      */
- public function run()
+    public function run()
     {
         // Seeder Dokter
         User::create([
             'role' => 'dokter',
-            'nama' => 'Dr. Andi Wijaya',
-            'email' => 'andi@klinik.test',
+            'nama' => 'Dr. Budi Santoso, Sp.PD',
+            'email' => 'dokterbudi@example.com',
             'password' => bcrypt('password'),
             'alamat' => 'Jl. Kesehatan No. 10',
             'no_ktp' => '1234567890123456',
             'no_hp' => '081234567890',
             'no_rm' => null,
-            'poli' => 'Poli Umum'
+            'poli' => 'Penyakit Dalam'
         ]);
 
         User::create([
             'role' => 'dokter',
-            'nama' => 'Dr. Siti Hidayah',
-            'email' => 'siti@klinik.test',
+            'nama' => 'Dr. Siti Rahayu, Sp.A',
+            'email' => 'doktersiti@example.com',
+            'password' => bcrypt('password'),
+            'alamat' => 'Jl. Anggrek No. 45, Jakarta Pusat',
+            'no_ktp' => '3175064610790002',
+            'no_hp' => '081234567891',
+            'no_rm' => null,
+            'poli' => 'Anak'
+        ]);
+
+        User::create([
+            'role' => 'dokter',
+            'nama' => 'Dr. Doni Pratama, Sp.THT',
+            'email' => 'dokterdoni@example.com',
             'password' => bcrypt('password'),
             'alamat' => 'Jl. Sehat Selalu No. 5',
             'no_ktp' => '2345678901234567',
             'no_hp' => '081298765432',
             'no_rm' => null,
-            'poli' => 'Poli Anak'
+            'poli' => 'THT'
         ]);
 
         // Seeder Pasien
+        $currentYearMonth = date('Ym'); // Format: 202506 untuk Juni 2025
+
+        // Pasien pertama
         User::create([
             'role' => 'pasien',
-            'nama' => 'Ahmad Fauzi',
-            'email' => 'ahmad@klinik.test',
+            'nama' => 'Mamay Maida',
+            'email' => 'pasienmamay@example.com',
             'password' => bcrypt('password'),
             'alamat' => 'Jl. Melati No. 3',
             'no_ktp' => '3456789012345678',
             'no_hp' => '082134567890',
-            'no_rm' => 'RM001',
+            'no_rm' => 'RM' . $currentYearMonth . '-001', 
             'poli' => null
         ]);
 
+        // Pasien kedua
         User::create([
             'role' => 'pasien',
             'nama' => 'Rina Kartika',
-            'email' => 'rina@klinik.test',
+            'email' => 'pasienrina@example.com',
             'password' => bcrypt('password'),
             'alamat' => 'Jl. Mawar No. 7',
             'no_ktp' => '4567890123456789',
             'no_hp' => '083245678901',
-            'no_rm' => 'RM002',
+            'no_rm' => 'RM' . $currentYearMonth . '-002', 
             'poli' => null
         ]);
     }

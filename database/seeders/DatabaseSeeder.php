@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         JanjiPeriksaSeeder::class,
         PeriksaSeeder::class,
         DetailPeriksaSeeder::class,
-        DokterSeeder::class,
+        // DokterSeeder::class,
     ]);
     }
 }

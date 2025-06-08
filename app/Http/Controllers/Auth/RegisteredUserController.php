@@ -49,7 +49,7 @@ class RegisteredUserController extends Controller
         }
 
         // Generate No RM dengan format RM{tahun}{bulan}-urutan
-        $currentYearMonth = date('Ym'); // Format: 202505 untuk Mei 2025
+        $currentYearMonth = date('Ym'); // Format: 202506 untuk Juni 2025
 
         // Hitung jumlah pasien yang terdaftar dengan tahun dan bulan yang sama
         $patientCount = User::where('no_rm', 'like', 'RM' . $currentYearMonth . '-%')->count();
@@ -66,7 +66,7 @@ class RegisteredUserController extends Controller
             'alamat' => $request->alamat,
             'no_hp' => $request->no_hp,
             'no_ktp' => $request->no_ktp,
-            'no_rm' => $no_rm,
+            'no_rm' => $no_rm, // Nomor RM yang terurut dengan format yang benar
         ]);
 
         // Trigger event Registered

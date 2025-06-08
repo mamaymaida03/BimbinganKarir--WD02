@@ -13,7 +13,20 @@ class JadwalPeriksaController extends Controller
     // Menampilkan halaman untuk membuat jadwal
     public function create()
     {
-        return view('dokter.jadwal.create');
+        $dokter = Auth::user(); // Ambil data dokter yang sedang login
+        
+        // Menentukan hari yang sesuai berdasarkan dokter yang login
+        if ($dokter->nama == 'Dr. Budi Santoso, Sp.PD') {
+            $hariJadwal = ['Senin', 'Selasa']; // Poli Penyakit Dalam
+        } elseif ($dokter->nama == 'Dr. Siti Rahayu, Sp.A') {
+            $hariJadwal = ['Rabu', 'Kamis']; // Poli Anak
+        } elseif ($dokter->nama == 'Dr. Doni Pratama, Sp.THT') {
+            $hariJadwal = ['Jumat', 'Sabtu']; // Poli THT
+        } else {
+            $hariJadwal = []; // Jika dokter lain, tidak ada jadwal
+        }
+
+        return view('dokter.jadwal.create', compact('hariJadwal'));
     }
 
     // Menyimpan jadwal pemeriksaan
@@ -61,6 +74,7 @@ class JadwalPeriksaController extends Controller
             'hari' => $request->hari,
             'jam_mulai' => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
+            'status' => true, // Jadwal baru langsung diaktifkan
         ]);
 
         return redirect()->route('dokter.jadwal.index')->with('success', 'Jadwal berhasil ditambahkan.');
@@ -75,7 +89,7 @@ class JadwalPeriksaController extends Controller
     }
 
     // Mengubah status jadwal
-   public function toggleStatus($id)
+    public function toggleStatus($id)
     {
         $jadwal = JadwalPeriksa::findOrFail($id);
 
@@ -96,7 +110,6 @@ class JadwalPeriksaController extends Controller
 
         return back()->with('success', 'Status jadwal berhasil diubah.');
     }
-
 
     // Menghapus jadwal
     public function destroy($id)

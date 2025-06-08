@@ -44,27 +44,38 @@
 
                     <form action="{{ route('dokter.jadwal.store') }}" method="POST" class="mt-6 space-y-6">
                         @csrf
-                        <div>
-                            <label for="hari" class="block text-sm font-medium text-gray-700">Hari</label>
-                            <select name="hari" id="hari" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
-                                <option value="Senin">Senin</option>
-                                <option value="Selasa">Selasa</option>
-                                <option value="Rabu">Rabu</option>
-                                <option value="Kamis">Kamis</option>
-                                <option value="Jumat">Jumat</option>
-                                <option value="Sabtu">Sabtu</option>
-                                <option value="Minggu">Minggu</option>
+                        @php
+                            // Menentukan hari yang sesuai berdasarkan dokter yang login
+                            $dokter = Auth::user(); // Ambil data dokter yang sedang login
+                            if ($dokter->nama == 'Dr. Budi Santoso, Sp.PD') {
+                                $hariJadwal = ['Senin', 'Selasa']; // Poli Penyakit Dalam
+                            } elseif ($dokter->nama == 'Dr. Siti Rahayu, Sp.A') {
+                                $hariJadwal = ['Rabu', 'Kamis']; // Poli Anak
+                            } elseif ($dokter->nama == 'Dr. Doni Pratama, Sp.THT') {
+                                $hariJadwal = ['Jumat', 'Sabtu']; // Poli THT
+                            } else {
+                                $hariJadwal = []; // Jika dokter lain, tidak ada jadwal
+                            }
+                        @endphp
+
+                        <div class="form-group">
+                            <label for="hari">Hari</label>
+                            <select class="form-control" id="hari" name="hari" required>
+                                <option value="">Pilih Hari</option>
+                                @foreach ($hariJadwal as $hari)
+                                    <option value="{{ $hari }}">{{ $hari }}</option>
+                                @endforeach
                             </select>
                         </div>
 
-                        <div>
-                            <label for="jam_mulai" class="block text-sm font-medium text-gray-700">Jam Mulai</label>
-                            <input type="time" name="jam_mulai" id="jam_mulai" value="{{ old('jam_mulai') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                        <div class="form-group">
+                            <label for="jam_mulai">Jam Mulai</label>
+                            <input type="time" class="form-control" id="jam_mulai" name="jam_mulai" required>
                         </div>
 
-                        <div>
-                            <label for="jam_selesai" class="block text-sm font-medium text-gray-700">Jam Selesai</label>
-                            <input type="time" name="jam_selesai" id="jam_selesai" value="{{ old('jam_selesai') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                        <div class="form-group">
+                            <label for="jam_selesai">Jam Selesai</label>
+                            <input type="time" class="form-control" id="jam_selesai" name="jam_selesai" required>
                         </div>
 
                         <button type="submit" class="btn btn-primary mt-4">Simpan</button>
