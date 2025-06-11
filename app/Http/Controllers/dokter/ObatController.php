@@ -105,4 +105,13 @@ class ObatController extends Controller
         // Redirect ke index
         return redirect()->route('dokter.obat.index');
     }
+
+    public function showForm($id)
+    {
+        $janjiPeriksa = JanjiPeriksa::with('pasien')->findOrFail($id);
+        $obats = Obat::all(); // Ambil semua data obat
+
+        return view('dokter.memeriksa.detail', compact('janjiPeriksa', 'obats'));
+    }
+
 }

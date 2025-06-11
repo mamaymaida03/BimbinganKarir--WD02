@@ -33,11 +33,17 @@ class RiwayatPeriksaController extends Controller
     public function riwayat($id)
     {
         $janjiPeriksa = JanjiPeriksa::with(['jadwalPeriksa.dokter'])->findOrFail($id);
-        $riwayat = $janjiPeriksa->riwayatPeriksa;
+        
+        // Hitung biaya obat jika sudah diperiksa
+        if ($janjiPeriksa->periksa) {
+            $biayaObat = $janjiPeriksa->periksa->detailPeriksas->sum(function ($detail) {
+                return $detail->obat->harga;
+            });
 
-        return view('pasien.riwayat-periksa.riwayat')->with([
-            'riwayat' => $riwayat,
-            'janjiPeriksa' => $janjiPeriksa,
-        ]);
+            $totalBiaya = 150000 + $biayaObat;
+        }
+
+        return view('pasien.riwayat-periksa.riwayat', compact('janjiPeriksa', 'totalBiaya'));
     }
+
 }

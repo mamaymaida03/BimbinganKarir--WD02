@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -12,7 +13,7 @@ class JanjiPeriksa extends Model
     protected $table = 'janji_periksas';
     protected $fillable = [
         'id_pasien',
-        'id_jadwal_periksa',
+        'id_jadwal',
         'status',
         'keluhan',
         'no_antrian',
@@ -25,7 +26,7 @@ class JanjiPeriksa extends Model
         return view('pasien.riwayat-periksa.index', compact('janjiPeriksas'));
     }
 
-    public function pasien():BelongsTo
+    public function pasien()
     {
         return $this->belongsTo(User::class, 'id_pasien');
     }
@@ -34,8 +35,6 @@ class JanjiPeriksa extends Model
     {
         return $this->belongsTo(JadwalPeriksa::class, 'id_jadwal');  
     }
-
-
 
     public function periksa(): HasOne
     {

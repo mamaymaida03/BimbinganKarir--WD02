@@ -41,12 +41,12 @@ class JanjiPeriksaController extends Controller
             ->where('status', true)
             ->first();
 
-        $jumlahJanji = JanjiPeriksa::where('id_jadwal_periksa', $jadwalPeriksa->id)->count();
+        $jumlahJanji = JanjiPeriksa::where('id_jadwal', $jadwalPeriksa->id)->count();
         $noAntrian = $jumlahJanji + 1;
 
         JanjiPeriksa::create([
             'id_pasien' => Auth::user()->id,
-            'id_jadwal_periksa' => $jadwalPeriksa->id,
+            'id_jadwal' => $jadwalPeriksa->id,
             'keluhan' => $request->keluhan,
             'no_antrian' => $noAntrian,
         ]);

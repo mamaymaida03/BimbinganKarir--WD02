@@ -12,16 +12,14 @@ class MemeriksaController extends Controller
 {
     public function index()
     {
-        // Ambil jadwal dokter yang sedang login
-        $jadwals = JadwalPeriksa::where('id_dokter', Auth::id())->get();  // Menampilkan semua jadwal dokter yang sedang login
+        $jadwals = JadwalPeriksa::where('id_dokter', Auth::id())->get();
 
-        // Ambil pasien berdasarkan id_jadwal yang ada pada jadwal dokter
-        $pasien = JanjiPeriksa::whereIn('id_jadwal', $jadwals->pluck('id'))  
-                              // Menghindari penggunaan 'tgl_periksa' jika kolom tidak ada
-                              ->whereNull('id_jadwal')  // Bisa disesuaikan untuk filter pasien yang belum diperiksa
-                              ->get();  // Ambil pasien yang sesuai dengan jadwal
-
-        return view('dokter.memeriksa.index', compact('pasien'));  // Kirim data pasien ke view
+        $pasien = JanjiPeriksa::with('pasien')
+        ->whereIn('id_jadwal', $jadwals->pluck('id'))
+        ->whereDoesntHave('periksa')
+        ->get();
+        
+        return view('dokter.memeriksa.index', compact('pasien'));
     }
 
     // Menampilkan detail pasien yang akan diperiksa
@@ -32,22 +30,38 @@ class MemeriksaController extends Controller
     }
 
     // Menyimpan hasil pemeriksaan
-    public function store(Request $request, $id)
+   public function store(Request $request, $id)
     {
         $request->validate([
             'catatan' => 'required|string',
             'biaya_periksa' => 'required|numeric',
+            'obat_id' => 'required|array', // Pastikan ada input obat_id yang dipilih
         ]);
 
         $janjiPeriksa = JanjiPeriksa::findOrFail($id);
 
+        // Hitung biaya obat
+        $biayaObat = Obat::whereIn('id', $request->obat_id)->sum('harga');
+        
+        // Biaya total = biaya dokter + biaya obat
+        $totalBiaya = 150000 + $biayaObat;
+
         // Update status pemeriksaan dan data lainnya
         $janjiPeriksa->update([
-            'tgl_periksa' => now(),  // Menandai pasien sudah diperiksa, jika tidak ada kolom ini, bisa dihapus
+            'tgl_periksa' => now(),  // Menandai pasien sudah diperiksa
             'catatan' => $request->catatan,
-            'biaya_periksa' => $request->biaya_periksa,
+            'biaya_periksa' => $totalBiaya,  // Menyimpan biaya total pemeriksaan
         ]);
+
+        // Simpan detail obat yang diberikan (jika ada)
+        foreach ($request->obat_id as $obatId) {
+            // Simpan detail obat yang diberikan kepada pasien
+            Periksa::findOrFail($janjiPeriksa->periksa->id)->detailPeriksas()->create([
+                'id_obat' => $obatId,
+            ]);
+        }
 
         return redirect()->route('dokter.memeriksa.index')->with('success', 'Pemeriksaan pasien berhasil.');
     }
+
 }
