@@ -22,14 +22,12 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Dokter Routes with role middleware
+// Dokter 
 Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () {
-    // Dashboard route
     Route::get('/dashboard', function () {
         return view('dokter.dashboard');
     })->name('dokter.dashboard');
 
-    // Routes for 'obat'
     Route::prefix('obat')->group(function () {
         Route::get('/', [ObatController::class, 'index'])->name('dokter.obat.index');
         Route::get('/create', [ObatController::class, 'create'])->name('dokter.obat.create');
@@ -39,23 +37,26 @@ Route::middleware(['auth', 'role:dokter'])->prefix('dokter')->group(function () 
         Route::delete('/{id}', [ObatController::class, 'destroy'])->name('dokter.obat.destroy');
     });
 
-    // Routes for 'jadwal' (Schedule)
     Route::prefix('jadwal')->group(function () {
         Route::get('/create', [JadwalPeriksaController::class, 'create'])->name('dokter.jadwal.create');
         Route::post('/', [JadwalPeriksaController::class, 'store'])->name('dokter.jadwal.store');
         Route::get('/', [JadwalPeriksaController::class, 'index'])->name('dokter.jadwal.index');
         Route::post('/{id}/status', [JadwalPeriksaController::class, 'toggleStatus'])->name('dokter.jadwal.status');
-        Route::delete('/{id}', [JadwalPeriksaController::class, 'destroy'])->name('dokter.jadwal.destroy');
+        //Route::delete('/{id}', [JadwalPeriksaController::class, 'destroy'])->name('dokter.jadwal.destroy');
     });
 
-    // Routes for 'memeriksa' (Memeriksa Pasien)
-    Route::prefix('memeriksa')->group(function () {
-        Route::get('/', [MemeriksaController::class, 'index'])->name('dokter.memeriksa.index');
-        Route::get('/{id}', [MemeriksaController::class, 'show'])->name('dokter.memeriksa.show');
-        Route::post('/{id}', [MemeriksaController::class, 'store'])->name('dokter.memeriksa.store');
+    Route::prefix('memeriksa')->name('dokter.memeriksa.')->group(function () {
+        Route::get('/', [MemeriksaController::class, 'index'])->name('index');
+        Route::get('/{janji}', [MemeriksaController::class, 'show'])->name('show');
+        Route::post('/{janji}', [MemeriksaController::class, 'store'])->name('store');
+        Route::get('/{periksa}/edit', [MemeriksaController::class, 'edit'])->name('edit');
+        Route::put('/{periksa}', [MemeriksaController::class, 'update'])->name('update');
     });
+
 });
 
+
+//Pasien
 Route::middleware(['auth', 'role:pasien'])->prefix('pasien')->group(function () {
     Route::get('/dashboard', function () {
         return view('pasien.dashboard');

@@ -56,12 +56,12 @@
                                         </button>
                                     </form>
 
-                                    {{-- Button Hapus --}}
+                                    {{-- Button Hapus
                                     <form action="{{ route('dokter.jadwal.destroy', $jadwal->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                    </form>
+                                    </form> --}}
                                 </td>
                             </tr>
                         @endforeach

@@ -32,7 +32,12 @@
                                     <td>{{ $janjiPeriksa->pasien->nama ?? '-' }}</td>
                                     <td>{{ $janjiPeriksa->keluhan }}</td>
                                     <td>
-                                        <a href="{{ route('dokter.memeriksa.show', $janjiPeriksa->id) }}" class="btn btn-primary">Periksa</a>
+                                        @if ($janjiPeriksa->periksa)
+                                            <span class="badge bg-success">Sudah Diperiksa</span>
+                                            <a href="{{ route('dokter.memeriksa.edit', $janjiPeriksa->periksa->id) }}" class="btn btn-sm btn-secondary mt-1">Edit</a>
+                                        @else
+                                            <a href="{{ route('dokter.memeriksa.show', $janjiPeriksa->id) }}" class="btn btn-primary">Periksa</a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
