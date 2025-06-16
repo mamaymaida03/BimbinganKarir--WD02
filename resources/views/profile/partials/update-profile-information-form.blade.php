@@ -48,6 +48,19 @@
             @endif
         </div>
 
+        <div class="mb-3">
+            <label for="id_poli" class="form-label">Poli</label>
+            <select name="id_poli" id="id_poli" class="form-control" required>
+                <option value="">-- Pilih Poli --</option>
+                @foreach($polis as $poli)
+                    <option value="{{ $poli->id }}" {{ $user->id_poli == $poli->id ? 'selected' : '' }}>
+                        {{ $poli->nama }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

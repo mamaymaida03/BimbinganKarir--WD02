@@ -114,4 +114,18 @@ class ObatController extends Controller
         return view('dokter.memeriksa.detail', compact('janjiPeriksa', 'obats'));
     }
 
+    public function trashed()
+    {
+        $obats = Obat::onlyTrashed()->get();
+        return view('dokter.obat.trashed', compact('obats'));
+    }
+
+    public function restore($id)
+    {
+        $obat = Obat::withTrashed()->findOrFail($id);
+        $obat->restore();
+
+        return redirect()->route('dokter.obat.trashed')->with('success', 'Obat berhasil dikembalikan.');
+    }
+
 }

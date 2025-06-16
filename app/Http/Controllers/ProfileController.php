@@ -8,45 +8,52 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\Poli;
 
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Tampilkan form edit profil.
      */
     public function edit(Request $request): View
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'polis' => Poli::all(),
         ]);
     }
 
     /**
-     * Update the user's profile information.
+     * Update data profil user.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        // Mengisi data user dengan data yang tervalidasi
-        $request->user()->fill([
-            'nama' => $request->validated()['nama'],  
-            'email' => $request->validated()['email'], 
+        $user = $request->user();
+
+        // Validasi input tambahan jika belum ada di ProfileUpdateRequest
+        $request->validate([
+            'nama' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email'],
+            'id_poli' => ['required', 'exists:polis,id'],
         ]);
 
-        // Cek apakah ada perubahan pada email dan set null pada kolom email_verified_at
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Update field
+        $user->nama = $request->input('nama');
+        $user->email = $request->input('email');
+        $user->id_poli = $request->input('id_poli');
+
+        // Reset verifikasi email jika email berubah
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        // Simpan perubahan
-        $request->user()->save();
+        $user->save();
 
-        // Redirect kembali ke halaman profile edit dengan pesan status
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
-
     /**
-     * Delete the user's account.
+     * Hapus akun user.
      */
     public function destroy(Request $request): RedirectResponse
     {
@@ -57,7 +64,6 @@ class ProfileController extends Controller
         $user = $request->user();
 
         Auth::logout();
-
         $user->delete();
 
         $request->session()->invalidate();

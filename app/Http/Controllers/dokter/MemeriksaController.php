@@ -79,11 +79,11 @@ class MemeriksaController extends Controller
 
     public function edit($id)
     {
-        $periksa = Periksa::with(['janjiPeriksa.pasien', 'detailPeriksa'])->findOrFail($id);
+        $periksa = Periksa::with(['janjiPeriksa.pasien', 'detailPeriksas', 'obats'])->findOrFail($id);
         $obats = Obat::all();
 
         // Ambil id obat yang sudah dipilih sebelumnya
-        $selectedObatIds = $periksa->detailPeriksa->pluck('id_obat')->toArray();
+        $selectedObatIds = $periksa->detailPeriksas->pluck('id_obat')->toArray();
 
         return view('dokter.memeriksa.edit', compact('periksa', 'obats', 'selectedObatIds'));
     }

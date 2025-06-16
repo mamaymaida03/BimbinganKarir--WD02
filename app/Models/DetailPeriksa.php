@@ -25,4 +25,5 @@ class DetailPeriksa extends Model
     {
         return $this->belongsTo(Obat::class, 'id_obat');
     }
+    
 }

@@ -22,13 +22,14 @@ class Periksa extends Model
         return $this->belongsTo(JanjiPeriksa::class, 'id_janji_periksa'); 
     }
 
-    public function detailPeriksa(): HasMany
+    public function detailPeriksas(): HasMany
     {
         return $this->hasMany(DetailPeriksa::class, 'id_periksa');
     }
 
-    public function obats(): BelongsToMany
+    public function obats()
     {
         return $this->belongsToMany(Obat::class, 'detail_periksas', 'id_periksa', 'id_obat');
     }
+
 }

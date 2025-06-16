@@ -2,18 +2,16 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Poli;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run()
     {
+
         // Seeder Dokter
         User::create([
             'role' => 'dokter',
@@ -24,7 +22,7 @@ class UserSeeder extends Seeder
             'no_ktp' => '1234567890123456',
             'no_hp' => '081234567890',
             'no_rm' => null,
-            'poli' => 'Penyakit Dalam'
+            'id_poli' => 1,
         ]);
 
         User::create([
@@ -36,7 +34,7 @@ class UserSeeder extends Seeder
             'no_ktp' => '3175064610790002',
             'no_hp' => '081234567891',
             'no_rm' => null,
-            'poli' => 'Anak'
+            'id_poli' => 2,
         ]);
 
         User::create([
@@ -48,13 +46,12 @@ class UserSeeder extends Seeder
             'no_ktp' => '2345678901234567',
             'no_hp' => '081298765432',
             'no_rm' => null,
-            'poli' => 'THT'
+            'id_poli' => 3,
         ]);
 
         // Seeder Pasien
-        $currentYearMonth = date('Ym'); // Format: 202506 untuk Juni 2025
+        $currentYearMonth = date('Ym'); // Misal: 202506 untuk Juni 2025
 
-        // Pasien pertama
         User::create([
             'role' => 'pasien',
             'nama' => 'Mamay Maida',
@@ -63,11 +60,10 @@ class UserSeeder extends Seeder
             'alamat' => 'Jl. Melati No. 3',
             'no_ktp' => '3456789012345678',
             'no_hp' => '082134567890',
-            'no_rm' => 'RM' . $currentYearMonth . '-001', 
-            'poli' => null
+            'no_rm' => 'RM' . $currentYearMonth . '-001',
+            'id_poli' => null,
         ]);
 
-        // Pasien kedua
         User::create([
             'role' => 'pasien',
             'nama' => 'Rina Kartika',
@@ -76,8 +72,8 @@ class UserSeeder extends Seeder
             'alamat' => 'Jl. Mawar No. 7',
             'no_ktp' => '4567890123456789',
             'no_hp' => '083245678901',
-            'no_rm' => 'RM' . $currentYearMonth . '-002', 
-            'poli' => null
+            'no_rm' => 'RM' . $currentYearMonth . '-002',
+            'id_poli' => null,
         ]);
     }
 }

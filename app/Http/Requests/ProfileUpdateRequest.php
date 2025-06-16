@@ -18,6 +18,7 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'nama' => 'required|string|max:255', 
             'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
+            'id_poli' => ['nullable', 'exists:polis,id'],
         ];
     }
 

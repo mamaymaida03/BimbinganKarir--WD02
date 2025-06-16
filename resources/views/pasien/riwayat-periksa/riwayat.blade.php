@@ -49,14 +49,13 @@
                             <h5 class="mb-0 font-semibold text-gray-800 card-title">Daftar Obat Diresepkan</h5>
                         </div>
                         <div class="card-body">
-                            @if (count($janjiPeriksa->periksa->detailPeriksas) > 0)
+                            @if (optional($janjiPeriksa->periksa)->detailPeriksas?->isNotEmpty())
                                 <ul class="list-group list-group-flush">
                                     @foreach ($janjiPeriksa->periksa->detailPeriksas as $detailPeriksa)
                                         <li
                                             class="px-0 list-group-item d-flex justify-content-between align-items-center border-bottom">
                                             <span>{{ $detailPeriksa->obat->nama_obat }}</span>
-                                            <span
-                                                class="badge bg-light text-dark">{{ $detailPeriksa->obat->kemasan }}</span>
+                                            <span class="badge bg-light text-dark">{{ $detailPeriksa->obat->kemasan }}</span>
                                         </li>
                                     @endforeach
                                 </ul>

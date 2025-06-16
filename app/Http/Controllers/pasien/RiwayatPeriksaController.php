@@ -30,20 +30,15 @@ class RiwayatPeriksaController extends Controller
         ]);
     }
 
-    public function riwayat($id)
+     public function riwayat($id)
     {
         $janjiPeriksa = JanjiPeriksa::with(['jadwalPeriksa.dokter'])->findOrFail($id);
-        
-        // Hitung biaya obat jika sudah diperiksa
-        if ($janjiPeriksa->periksa) {
-            $biayaObat = $janjiPeriksa->periksa->detailPeriksas->sum(function ($detail) {
-                return $detail->obat->harga;
-            });
+        $riwayat = $janjiPeriksa->riwayatPeriksa;
 
-            $totalBiaya = 150000 + $biayaObat;
-        }
-
-        return view('pasien.riwayat-periksa.riwayat', compact('janjiPeriksa', 'totalBiaya'));
+        return view('pasien.riwayat-periksa.riwayat')->with([
+            'riwayat' => $riwayat,
+            'janjiPeriksa' => $janjiPeriksa,
+        ]);
     }
 
 }
