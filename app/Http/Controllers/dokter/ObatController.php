@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\dokter; 
+
 use App\Http\Controllers\Controller;
 use App\Models\Obat; 
 use Illuminate\Http\Request; 
@@ -8,124 +9,126 @@ use Illuminate\Http\Request;
 class ObatController extends Controller
 {
     /**
-     * Menampilkan daftar semua obat.
+     * Fungsi: Menampilkan semua data obat.
+     * Route terkait: GET /dokter/obat
      */
     public function index()
     {
-        // Mengambil semua data obat dari tabel obats
-        $obats = Obat::all();
-
-        // Mengirimkan data obats ke view dokter.obat.index
+        $obats = Obat::all(); // Ambil semua data obat dari database
         return view('dokter.obat.index')->with([
-            'obats' => $obats,
+            'obats' => $obats, // Kirim data ke view
         ]);
     }
 
     /**
-     * Menampilkan form untuk membuat data obat baru.
+     * Fungsi: Menampilkan form untuk input data obat baru.
+     * Route terkait: GET /dokter/obat/create
      */
     public function create(){
-        // Mengembalikan view untuk create obat
-        return view('dokter.obat.create');
+        return view('dokter.obat.create'); // Tampilkan form tambah obat
     }
 
     /**
-     * Menampilkan form untuk edit data obat.
+     * Fungsi: Menampilkan form untuk mengedit data obat berdasarkan ID.
+     * Route terkait: GET /dokter/obat/{id}/edit
      */
     public function edit($id)
     {
-        // Mencari data obat berdasarkan id
-        $obat = Obat::find($id);
-
-        // Mengirimkan data obat ke view edit
+        $obat = Obat::find($id); // Cari obat berdasarkan ID
         return view('dokter.obat.edit')->with([
-            'obat' => $obat,
+            'obat' => $obat, // Kirim data obat ke form edit
         ]);
     }
 
     /**
-     * Menyimpan data obat baru.
+     * Fungsi: Menyimpan data obat baru ke database.
+     * Route terkait: POST /dokter/obat
      */
     public function store(Request $request)
     {
-        // Validasi data request
+        // Validasi inputan dari form
         $request->validate([
             'nama_obat' => 'required|string|max:255',
             'kemasan' => 'required|string|max:255',
             'harga' => 'required|numeric|min:0',
         ]);
 
-        // Membuat record baru di tabel obats
+        // Simpan data obat ke database
         Obat::create([
             'nama_obat' => $request->nama_obat,
             'kemasan' => $request->kemasan,
             'harga' => $request->harga,
         ]);
 
-        // Redirect ke index dengan flash message 'obat-created'
+        // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('dokter.obat.index')->with('status', 'obat-created');
     }
 
     /**
-     * Memperbarui data obat yang sudah ada.
+     * Fungsi: Memperbarui data obat yang sudah ada berdasarkan ID.
+     * Route terkait: PUT /dokter/obat/{id}
      */
     public function update(Request $request, $id) {
-        // Validasi data request
+        // Validasi input
         $request->validate([
             'nama_obat' => 'required|string|max:255',
             'kemasan' => 'required|string|max:255',
             'harga' => 'required|numeric|min:0',
         ]);
 
-        // Cari data obat berdasarkan id
+        // Cari dan update data
         $obat = Obat::find($id);
-
-        // Update data obat
         $obat->update([
             'nama_obat' => $request->nama_obat,
             'kemasan' => $request->kemasan,
             'harga' => $request->harga,
         ]);
 
-        // Redirect ke index dengan flash message 'obat-updated'
+        // Redirect ke index dengan pesan sukses
         return redirect()->route('dokter.obat.index')->with('status', 'obat-updated');
     }
 
     /**
-     * Menghapus data obat.
+     * Fungsi: Menghapus data obat (soft delete jika model mendukung).
+     * Route terkait: DELETE /dokter/obat/{id}
      */
     public function destroy($id)
     {
-        // Cari data obat berdasarkan id
-        $obat = Obat::find($id);
-
-        // Hapus data obat
-        $obat->delete();
-
-        // Redirect ke index
-        return redirect()->route('dokter.obat.index');
+        $obat = Obat::find($id); // Cari obat
+        $obat->delete(); // Hapus (soft delete)
+        return redirect()->route('dokter.obat.index'); // Kembali ke daftar obat
     }
 
+    /**
+     * Fungsi: Menampilkan form detail pemeriksaan dan daftar obat yang tersedia.
+     * Route terkait: GET /dokter/periksa/{id}/form
+     */
     public function showForm($id)
     {
-        $janjiPeriksa = JanjiPeriksa::with('pasien')->findOrFail($id);
-        $obats = Obat::all(); // Ambil semua data obat
-
+        $janjiPeriksa = JanjiPeriksa::with('pasien')->findOrFail($id); // Data janji dan pasien
+        $obats = Obat::all(); // Semua obat tersedia
         return view('dokter.memeriksa.detail', compact('janjiPeriksa', 'obats'));
     }
 
+    /**
+     * Fungsi: Menampilkan daftar obat yang telah dihapus (soft delete).
+     * Route terkait: GET /dokter/obat/trashed
+     */
     public function trashed()
     {
-        $obats = Obat::onlyTrashed()->get();
+        $obats = Obat::onlyTrashed()->get(); // Ambil hanya data yang terhapus
         return view('dokter.obat.trashed', compact('obats'));
     }
 
+    /**
+     * Fungsi: Mengembalikan (restore) data obat yang telah dihapus.
+     * Route terkait: PATCH /dokter/obat/{id}/restore
+     */
     public function restore($id)
     {
-        $obat = Obat::withTrashed()->findOrFail($id);
-        $obat->restore();
+        $obat = Obat::withTrashed()->findOrFail($id); // Cari termasuk yang soft deleted
+        $obat->restore(); // Restore data
 
         return redirect()->route('dokter.obat.trashed')->with('success', 'Obat berhasil dikembalikan.');
     }
-
 }

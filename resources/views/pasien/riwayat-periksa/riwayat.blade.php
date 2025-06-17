@@ -18,6 +18,7 @@
                         </p>
                     </header>
 
+                    {{-- Detail Pemeriksaan --}}
                     <div class="mb-4 border-2 card">
                         <div class="bg-white border-black card-header border-bottom">
                             <h5 class="mb-0 font-semibold text-gray-800 card-title">Detail Pemeriksaan</h5>
@@ -28,7 +29,7 @@
                                     <div class="mb-3">
                                         <label class="font-semibold text-gray-700 form-label">Tanggal Periksa</label>
                                         <div class="form-control-plaintext">
-                                            {{ \Carbon\Carbon::parse($janjiPeriksa->periksa->tgl_periksa)->translatedFormat('d F Y H.i') }}
+                                            {{ optional($janjiPeriksa->periksa)?->tgl_periksa ? \Carbon\Carbon::parse($janjiPeriksa->periksa->tgl_periksa)->translatedFormat('d F Y H.i') : '-' }}
                                         </div>
                                     </div>
                                 </div>
@@ -36,7 +37,7 @@
                                     <div class="mb-3">
                                         <label class="font-semibold text-gray-700 form-label">Catatan</label>
                                         <div class="form-control-plaintext">
-                                            {{ $janjiPeriksa->periksa->catatan ?: 'Tidak ada catatan' }}
+                                            {{ optional($janjiPeriksa->periksa)?->catatan ?: 'Tidak ada catatan' }}
                                         </div>
                                     </div>
                                 </div>
@@ -44,18 +45,18 @@
                         </div>
                     </div>
 
+                    {{-- Daftar Obat --}}
                     <div class="mb-4 border-2 card">
                         <div class="bg-white border-black card-header border-bottom">
                             <h5 class="mb-0 font-semibold text-gray-800 card-title">Daftar Obat Diresepkan</h5>
                         </div>
                         <div class="card-body">
-                            @if (optional($janjiPeriksa->periksa)->detailPeriksas?->isNotEmpty())
+                            @if (optional($janjiPeriksa->periksa)?->detailPeriksas?->isNotEmpty())
                                 <ul class="list-group list-group-flush">
                                     @foreach ($janjiPeriksa->periksa->detailPeriksas as $detailPeriksa)
-                                        <li
-                                            class="px-0 list-group-item d-flex justify-content-between align-items-center border-bottom">
-                                            <span>{{ $detailPeriksa->obat->nama_obat }}</span>
-                                            <span class="badge bg-light text-dark">{{ $detailPeriksa->obat->kemasan }}</span>
+                                        <li class="px-0 list-group-item d-flex justify-content-between align-items-center border-bottom">
+                                            <span>{{ optional($detailPeriksa->obat)->nama_obat ?? 'Obat tidak ditemukan' }}</span>
+                                            <span class="badge bg-light text-dark">{{ optional($detailPeriksa->obat)->kemasan ?? '-' }}</span>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -65,17 +66,19 @@
                         </div>
                     </div>
 
+                    {{-- Biaya Pemeriksaan --}}
                     <div class="mb-4 border-2 card bg-light">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="font-semibold text-gray-800 fw-bold">Biaya Periksa</span>
                                 <span class="fw-bold fs-5 text-primary">
-                                    {{ 'Rp' . number_format($janjiPeriksa->periksa->biaya_periksa, 0, ',', '.') }}
+                                    {{ optional($janjiPeriksa->periksa)?->biaya_periksa ? 'Rp' . number_format($janjiPeriksa->periksa->biaya_periksa, 0, ',', '.') : '-' }}
                                 </span>
                             </div>
                         </div>
                     </div>
 
+                    {{-- Tombol Kembali --}}
                     <div class="mt-4">
                         <a href="{{ route('pasien.riwayat-periksa.index') }}" class="btn btn-secondary">
                             <i class="bi bi-arrow-left me-1"></i> {{ __('Kembali') }}

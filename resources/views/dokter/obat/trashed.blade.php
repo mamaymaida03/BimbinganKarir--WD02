@@ -1,23 +1,27 @@
 <x-app-layout>
+    <!-- Slot header, menampilkan judul halaman -->
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Obat Terhapus
         </h2>
     </x-slot>
 
+    <!-- Kontainer utama -->
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            {{-- Flash message sukses --}}
+            {{-- Menampilkan pesan sukses jika ada --}}
             @if (session('success'))
                 <div class="mb-4 p-4 bg-green-100 text-green-700 rounded shadow">
                     {{ session('success') }}
                 </div>
             @endif
 
-            {{-- Tombol kembali --}}
-            <a href="{{ route('dokter.obat.index') }}" class="mb-4 inline-block bg-gray-500 text-white px-4 py-2 rounded">Kembali</a>
+            {{-- Tombol kembali ke daftar obat --}}
+            <a href="{{ route('dokter.obat.index') }}" 
+               class="mb-4 inline-block bg-gray-500 text-white px-4 py-2 rounded">Kembali</a>
 
+            <!-- Wrapper tabel -->
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                 <div class="overflow-x-auto">
                     <table class="table-auto w-full border border-gray-300 text-sm">
@@ -33,27 +37,31 @@
                         <tbody>
                             @forelse ($obats as $index => $obat)
                                 <tr class="hover:bg-gray-50">
+                                    <!-- Nomor urut -->
                                     <td class="border px-4 py-2 text-center">{{ $index + 1 }}</td>
+                                    <!-- Nama obat -->
                                     <td class="border px-4 py-2">{{ $obat->nama_obat }}</td>
+                                    <!-- Kemasan -->
                                     <td class="border px-4 py-2">{{ $obat->kemasan }}</td>
+                                    <!-- Harga dalam format rupiah -->
                                     <td class="border px-4 py-2">Rp{{ number_format($obat->harga, 0, ',', '.') }}</td>
+                                    <!-- Tombol Restore -->
                                     <td class="border px-4 py-2 text-center">
+
+                                        <!-- untuk mengembalikan obat yang sudah dihapus -->
                                         <form action="{{ route('dokter.obat.restore', $obat->id) }}" method="POST"
-                                            onsubmit="return confirm('Yakin ingin mengembalikan obat ini?')">
+                                              onsubmit="return confirm('Yakin ingin mengembalikan obat ini?')">
                                             @csrf
                                             @method('PATCH')
-                                            <form action="{{ route('dokter.obat.restore', $obat->id) }}" method="POST"
-                                                onsubmit="return confirm('Yakin ingin mengembalikan obat ini?')">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-success btn-sm">
-                                                    <i class="fas fa-undo-alt"></i> Restore
-                                                </button>
-                                            </form>
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-undo-alt"></i> Restore
+                                            </button>
                                         </form>
+
                                     </td>
                                 </tr>
                             @empty
+                                <!-- Jika tidak ada data obat terhapus -->
                                 <tr>
                                     <td colspan="5"
                                         class="text-center py-6 text-gray-500 bg-gray-50 italic border">

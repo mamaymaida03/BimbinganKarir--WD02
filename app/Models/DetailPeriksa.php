@@ -9,21 +9,29 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DetailPeriksa extends Model
 {
-    use HasFactory;
+    use HasFactory; // Mengaktifkan fitur factory untuk keperluan seeding/data dummy
 
+    // Kolom yang boleh diisi secara massal (mass assignment)
     protected $fillable = [
-        'id_periksa',
-        'id_obat',
+        'id_periksa', // ID relasi ke tabel periksa
+        'id_obat',    // ID relasi ke tabel obat
     ];
 
-    public function periksa():BelongsTo
+    /**
+     * Relasi ke model Periksa
+     * Setiap detail periksa dimiliki oleh satu data periksa
+     */
+    public function periksa(): BelongsTo
     {
         return $this->belongsTo(Periksa::class, 'id_periksa');
     }
 
-    public function obat():BelongsTo
+    /**
+     * Relasi ke model Obat
+     * Setiap detail periksa memiliki satu obat
+     */
+    public function obat(): BelongsTo
     {
         return $this->belongsTo(Obat::class, 'id_obat');
     }
-    
 }

@@ -11,10 +11,14 @@ class Poli extends Model
 {
     use HasFactory;
 
+    // Menentukan atribut yang dapat diisi secara massal
     protected $fillable = ['nama', 'deskripsi'];
 
     /**
-     * Relasi ke model User untuk role dokter
+     * Relasi one-to-many ke model User.
+     * Mengambil semua user yang berperan sebagai dokter dan memiliki id_poli ini.
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function dokters(): HasMany
     {

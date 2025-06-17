@@ -1,4 +1,5 @@
 <x-app-layout>
+    <!-- Slot untuk judul halaman -->
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-gray-800">
             {{ __('Jadwal Periksa') }}
@@ -8,20 +9,33 @@
     <div class="py-12">
         <div class="mx-auto space-y-6 max-w-7xl sm:px-6 lg:px-8">
             <div class="p-4 bg-white shadow-sm sm:p-8 sm:rounded-lg">
+                
+                <!-- Header bagian atas tabel -->
                 <header class="flex items-center justify-between">
                     <h2 class="text-lg font-medium text-gray-900">
                         {{ __('Daftar Jadwal Periksa') }}
                     </h2>
 
+                    <!-- Tombol tambah jadwal -->
                     <div class="flex-col items-center justify-center text-center">
                         <a href="{{ route('dokter.jadwal.create') }}" class="btn btn-primary">Tambah Jadwal</a>
 
+                        <!-- Notifikasi jika jadwal berhasil ditambahkan -->
                         @if (session('status') === 'jadwal-created')
-                            <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600">{{ __('Jadwal berhasil dibuat.') }}</p>
+                            <p 
+                                x-data="{ show: true }" 
+                                x-show="show" 
+                                x-transition 
+                                x-init="setTimeout(() => show = false, 2000)" 
+                                class="text-sm text-gray-600"
+                            >
+                                {{ __('Jadwal berhasil dibuat.') }}
+                            </p>
                         @endif
                     </div>
                 </header>
 
+                <!-- Tabel daftar jadwal -->
                 <table class="table mt-6 overflow-hidden rounded table-hover">
                     <thead class="thead-light">
                         <tr>
@@ -35,33 +49,41 @@
                     </thead>
 
                     <tbody>
+                        <!-- Iterasi setiap jadwal yang dimiliki dokter -->
                         @foreach ($jadwals as $jadwal)
                             <tr>
                                 <th scope="row" class="align-middle text-start">{{ $loop->iteration }}</th>
                                 <td class="align-middle text-start">{{ $jadwal->hari }}</td>
+                                <!-- Format jam mulai & selesai -->
                                 <td class="align-middle text-start">{{ \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i') }}</td>
                                 <td class="align-middle text-start">{{ \Carbon\Carbon::parse($jadwal->jam_selesai)->format('H:i') }}</td>
                                 <td class="align-middle text-start">
+                                    <!-- Badge status jadwal -->
                                     <span class="badge {{ $jadwal->status ? 'bg-success' : 'bg-danger' }} text-white fw-bold fs-5">
                                         {{ $jadwal->status ? 'Aktif' : 'Nonaktif' }}
                                     </span>
                                 </td>
 
                                 <td class="flex items-center gap-3">
-                                    {{-- Button untuk mengubah status --}}
+                                    {{-- Tombol untuk mengaktifkan/nonaktifkan jadwal --}}
                                     <form action="{{ route('dokter.jadwal.status', $jadwal->id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn {{ $jadwal->status ? 'btn-warning' : 'btn-success' }} btn-sm">
+                                        <button 
+                                            type="submit" 
+                                            class="btn {{ $jadwal->status ? 'btn-warning' : 'btn-success' }} btn-sm"
+                                        >
                                             {{ $jadwal->status ? 'Nonaktifkan' : 'Aktifkan' }}
                                         </button>
                                     </form>
 
-                                    {{-- Button Hapus
+                                    {{-- Tombol hapus jadwal (dinonaktifkan) --}}
+                                    {{-- 
                                     <form action="{{ route('dokter.jadwal.destroy', $jadwal->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                                    </form> --}}
+                                    </form> 
+                                    --}}
                                 </td>
                             </tr>
                         @endforeach

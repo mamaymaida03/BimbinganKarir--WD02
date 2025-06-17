@@ -1,7 +1,8 @@
-<x-app-layout>
+<x-app-layout> 
+    <!-- Menentukan bagian header dari layout aplikasi -->
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Riwayat Periksa') }}
+            {{ __('Riwayat Periksa') }} <!-- Judul halaman -->
         </h2>
     </x-slot>
 
@@ -11,18 +12,22 @@
                 <section>
                     <header class="mb-4">
                         <h2 class="text-lg font-medium text-gray-900">
-                            {{ __('Detail Riwayat Pemeriksaan') }}
+                            {{ __('Detail Riwayat Pemeriksaan') }} <!-- Subjudul halaman -->
                         </h2>
                         <p class="mt-1 text-sm text-gray-600">
                             {{ __('Informasi lengkap mengenai jadwal pemeriksaan Anda.') }}
                         </p>
                     </header>
 
+                    <!-- Panel utama berisi detail pemeriksaan -->
                     <div class="overflow-hidden bg-white rounded-lg shadow-sm">
                         <div class="p-4">
-                            <div class="row g-4">
+                            <div class="row g-4"> <!-- Baris berisi 2 kolom utama -->
+
+                                <!-- Kolom kiri: informasi detail -->
                                 <div class="col-md-8">
                                     <div class="list-group">
+                                        <!-- Menampilkan nama poliklinik -->
                                         <div class="px-4 py-3 mb-2 border-0 rounded list-group-item bg-light">
                                             <div class="d-flex justify-content-between">
                                                 <span class="text-gray-700">Poliklinik</span>
@@ -31,6 +36,8 @@
                                                 </span>
                                             </div>
                                         </div>
+
+                                        <!-- Menampilkan nama dokter -->
                                         <div class="px-4 py-3 mb-2 border-0 rounded list-group-item bg-light">
                                             <div class="d-flex justify-content-between">
                                                 <span class="text-gray-700">Nama Dokter</span>
@@ -39,6 +46,8 @@
                                                 </span>
                                             </div>
                                         </div>
+
+                                        <!-- Menampilkan hari pemeriksaan -->
                                         <div class="px-4 py-3 mb-2 border-0 rounded list-group-item bg-light">
                                             <div class="d-flex justify-content-between">
                                                 <span class="text-gray-700">Hari Pemeriksaan</span>
@@ -47,6 +56,8 @@
                                                 </span>
                                             </div>
                                         </div>
+
+                                        <!-- Menampilkan jam mulai -->
                                         <div class="px-4 py-3 mb-2 border-0 rounded list-group-item bg-light">
                                             <div class="d-flex justify-content-between">
                                                 <span class="text-gray-700">Jam Mulai</span>
@@ -55,6 +66,8 @@
                                                 </span>
                                             </div>
                                         </div>
+
+                                        <!-- Menampilkan jam selesai -->
                                         <div class="px-4 py-3 mb-2 border-0 rounded list-group-item bg-light">
                                             <div class="d-flex justify-content-between">
                                                 <span class="text-gray-700">Jam Selesai</span>
@@ -65,6 +78,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Kolom kanan: menampilkan nomor antrian -->
                                 <div class="col-md-4">
                                     <div class="p-4 rounded bg-light h-100 d-flex flex-column align-items-center justify-content-center">
                                         <h5 class="mb-3 text-gray-700">Nomor Antrian Anda</h5>
@@ -80,6 +95,7 @@
                         </div>
                     </div>
 
+                    <!-- Tombol kembali ke halaman daftar riwayat -->
                     <div class="mt-4">
                         <a href="{{ route('pasien.riwayat-periksa.index') }}" class="btn btn-secondary">
                             <i class="bi bi-arrow-left me-1"></i> {{ __('Kembali') }}

@@ -11,35 +11,43 @@ use Illuminate\Validation\ValidationException;
 
 class JadwalPeriksaController extends Controller
 {
-    // Menampilkan halaman untuk membuat jadwal
+    /**
+     * Menampilkan form untuk membuat jadwal pemeriksaan.
+     * Jadwal ditentukan berdasarkan nama dokter yang login.
+     * View: dokter.jadwal.create
+     */
     public function create()
     {
-        $dokter = Auth::user(); // Ambil data dokter yang sedang login
-        
-        // Menentukan hari yang sesuai berdasarkan dokter yang login
+        $dokter = Auth::user(); // Ambil user login
+
+        // Tentukan hari sesuai nama dokter (hardcoded)
         if ($dokter->nama == 'Dr. Budi Santoso, Sp.PD') {
-            $hariJadwal = ['Senin', 'Selasa']; // Poli Penyakit Dalam
+            $hariJadwal = ['Senin', 'Selasa'];
         } elseif ($dokter->nama == 'Dr. Siti Rahayu, Sp.A') {
-            $hariJadwal = ['Rabu', 'Kamis']; // Poli Anak
+            $hariJadwal = ['Rabu', 'Kamis'];
         } elseif ($dokter->nama == 'Dr. Doni Pratama, Sp.THT') {
-            $hariJadwal = ['Jumat', 'Sabtu']; // Poli THT
+            $hariJadwal = ['Jumat', 'Sabtu'];
         } else {
-            $hariJadwal = []; // Jika dokter lain, tidak ada jadwal
+            $hariJadwal = [];
         }
 
         return view('dokter.jadwal.create', compact('hariJadwal'));
     }
 
-    // Menyimpan jadwal pemeriksaan
+    /**
+     * Menyimpan data jadwal periksa baru ke database.
+     * Validasi dilakukan untuk mencegah bentrok waktu dan duplikasi.
+     */
     public function store(Request $request)
     {
+        // Validasi inputan form
         $request->validate([
             'hari' => 'required|string',
             'jam_mulai' => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
         ]);
 
-        // Cek apakah ada jadwal yang bentrok (tidak harus sama persis jamnya)
+        // Cek bentrok dengan jadwal lain (overlapping time)
         $hasConflict = JadwalPeriksa::where('id_dokter', Auth::id())
             ->where('hari', $request->hari)
             ->where(function ($query) use ($request) {
@@ -56,7 +64,7 @@ class JadwalPeriksaController extends Controller
             return back()->withErrors(['jam_mulai' => 'Jadwal periksa bentrok dengan jadwal lain!'])->withInput();
         }
 
-        // Cek apakah dokter sudah memiliki jadwal yang sama persis
+        // Cek jika jadwal persis sudah ada
         $existingSchedule = JadwalPeriksa::where('id_dokter', Auth::id())
             ->where('hari', $request->hari)
             ->where('jam_mulai', $request->jam_mulai)
@@ -69,41 +77,45 @@ class JadwalPeriksaController extends Controller
             ]);
         }
 
-        // Simpan jadwal
+        // Simpan jadwal baru
         JadwalPeriksa::create([
             'id_dokter' => Auth::id(),
             'hari' => $request->hari,
             'jam_mulai' => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
-            'status' => true, // Jadwal baru langsung diaktifkan
+            'status' => true,
         ]);
 
         return redirect()->route('dokter.jadwal.index')->with('success', 'Jadwal berhasil ditambahkan.');
     }
 
-    // Menampilkan daftar jadwal pemeriksaan
+    /**
+     * Menampilkan semua jadwal pemeriksaan milik dokter yang sedang login.
+     * View: dokter.jadwal.index
+     */
     public function index()
     {
         $jadwals = JadwalPeriksa::where('id_dokter', Auth::id())->get();
-
         return view('dokter.jadwal.index', compact('jadwals'));
     }
 
-    // Mengubah status jadwal
+    /**
+     * Mengubah status aktif/tidak aktif dari jadwal periksa.
+     * Hanya satu jadwal yang bisa aktif pada satu waktu untuk satu dokter.
+     */
     public function toggleStatus($id)
     {
         $jadwal = JadwalPeriksa::findOrFail($id);
 
         if (!$jadwal->status) {
-            // Nonaktifkan jadwal aktif lain untuk dokter yang sama
+            // Jika ingin mengaktifkan, matikan jadwal aktif lain
             JadwalPeriksa::where('id_dokter', $jadwal->id_dokter)
                 ->where('status', true)
                 ->update(['status' => false]);
 
-            // Aktifkan jadwal ini
             $jadwal->status = true;
         } else {
-            // Kalau sedang aktif, jadikan nonaktif
+            // Jika sedang aktif, nonaktifkan
             $jadwal->status = false;
         }
 
@@ -112,7 +124,9 @@ class JadwalPeriksaController extends Controller
         return back()->with('success', 'Status jadwal berhasil diubah.');
     }
 
-    // Menghapus jadwal
+    /**
+     * Menghapus jadwal periksa berdasarkan ID.
+     */
     public function destroy($id)
     {
         $jadwal = JadwalPeriksa::findOrFail($id);
@@ -121,30 +135,35 @@ class JadwalPeriksaController extends Controller
         return back()->with('success', 'Jadwal berhasil dihapus.');
     }
 
+    /**
+     * Menampilkan daftar pasien yang belum diperiksa (belum memiliki nomor rekam medis).
+     * View: dokter.memeriksa
+     */
     public function memeriksaPasien()
     {
         $pasien = User::where('role', 'pasien')
-                    ->whereNull('no_rm')  // Status pasien yang belum diperiksa
+                    ->whereNull('no_rm') // Belum diperiksa
                     ->get();
 
         return view('dokter.memeriksa', compact('pasien'));
     }
 
-
+    /**
+     * Menyimpan catatan hasil pemeriksaan pasien.
+     * View setelah simpan: dokter.memeriksa
+     */
     public function periksaPasien(Request $request, $id)
     {
-        // Validasi dan proses pemeriksaan
+        // Validasi input catatan
         $request->validate([
             'catatan' => 'required|string|max:255',
         ]);
 
-        // Simpan hasil pemeriksaan
+        // Simpan catatan ke data pasien
         $pasien = User::findOrFail($id);
-        $pasien->catatan = $request->catatan;  // Simpan catatan pemeriksaan
+        $pasien->catatan = $request->catatan;
         $pasien->save();
 
         return view('dokter.memeriksa', compact('pasien'));
-
     }
-
 }
